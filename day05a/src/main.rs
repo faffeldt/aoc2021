@@ -42,7 +42,7 @@ fn local_test_b() {
     println!("> Test input:\n{}", vent_map);
     vent_map.draw();
     let num_overlapping_lines = vent_map.number_of_overlapping_lines();
-    let expected_num_overlapping_lines = 5;
+    let expected_num_overlapping_lines = 12;
     assert_eq!{
         num_overlapping_lines, 
         expected_num_overlapping_lines, 

@@ -115,21 +115,18 @@ impl Line {
 
     fn get_points_on_line(&self) -> Vec<Point> {
         let mut points: Vec<Point> = Vec::new();
-        if self.is_straight() {
-            let (dx, dy) = self.start.abs_diff(self.end);
-            let x_mod = dx.signum();
-            let y_mod = dy.signum();
-            for step in 0..std::cmp::max(dx.abs(), dy.abs())+1 {
-                let new_x = self.start.x as isize + (step * x_mod);
-                let new_y = self.start.y as isize + (step * y_mod);
-                // println!{"DEBUG> Point on line: start={} end={} step={}:\n\tdx={}, x_mod={}, start_x={}, dy={}, y_mod={}, start_y={}", self.start, self.end, step, dx, x_mod, self.start.x as isize, dy, y_mod, self.start.y as isize}
-                points.push(Point::new(new_x as usize, new_y as usize));
-            }
-            // println!{"DEBUG> Points on line: start={} end={}:\n\t{:?}", self.start, self.end, points}
-
-        } else {
-            // Not implemented yet
+        
+        let (dx, dy) = self.start.abs_diff(self.end);
+        let x_mod = dx.signum();
+        let y_mod = dy.signum();
+        for step in 0..std::cmp::max(dx.abs(), dy.abs())+1 {
+            let new_x = self.start.x as isize + (step * x_mod);
+            let new_y = self.start.y as isize + (step * y_mod);
+            // println!{"DEBUG> Point on line: start={} end={} step={}:\n\tdx={}, x_mod={}, start_x={}, dy={}, y_mod={}, start_y={}", self.start, self.end, step, dx, x_mod, self.start.x as isize, dy, y_mod, self.start.y as isize}
+            points.push(Point::new(new_x as usize, new_y as usize));
         }
+        // println!{"DEBUG> Points on line: start={} end={}:\n\t{:?}", self.start, self.end, points}
+
         points
     }
 }
