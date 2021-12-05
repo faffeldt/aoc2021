@@ -1,115 +1,73 @@
 use std::env;
-use std::fs;
+mod bingo;
+use crate::bingo::Bingo;
 
 pub fn main() {
     println!("CWD: {:?}", env::current_dir());
-    local_test();
-    // solution();
+    // local_test_a();
+    // solution_a();
+    local_test_b();
+    solution_b();
 }
 
-fn local_test() {
+fn local_test_a() {
     let input_file = ".\\test_input.txt";
-    let bingo = Bingo::from_file(input_file);
-    // println!("> Test input: {:?}", bingo);
-    
-
-    let result = 0;
+    let mut bingo = Bingo::from_file(input_file);
+    println!("> Test input:\n{}", bingo);
+    let (winner_board_idx, sum_of_all_unmarked_cells, last_drawn_number) = bingo.play();
+    let result = sum_of_all_unmarked_cells * last_drawn_number;
 
     let expected_winning_board = 2;
-    let expected_marked_numbers = vec![14, 21, 17, 24, 4];
+    assert_eq! {winner_board_idx, expected_winning_board, "Winning Board Index mismatches: {} == {}", winner_board_idx, expected_winning_board}
+    // let expected_marked_numbers = vec![14, 21, 17, 24, 4];
     let expected_sum_of_unmarked_numbers = 188;
+    assert_eq! {sum_of_all_unmarked_cells, expected_sum_of_unmarked_numbers, "Sum of marked numbers mismatches: {} == {}", sum_of_all_unmarked_cells, expected_sum_of_unmarked_numbers}
     let expected_last_drawn_number = 24;
-    let expected_result = expected_sum_of_unmarked_numbers * expected_last_drawn_number;  // 4512
-    println! {"> exp:\twb={}, marked_numbers={:?}, sum_unmarked={}, last_drawn={} => result={}", expected_winning_board, expected_marked_numbers, expected_sum_of_unmarked_numbers, expected_last_drawn_number, expected_result}
-    println! {"> got: result={}", result};
+    assert_eq! {last_drawn_number, expected_last_drawn_number, "Last drawn number mismatches: {} == {}", last_drawn_number, expected_last_drawn_number}
+    let expected_result = expected_sum_of_unmarked_numbers * expected_last_drawn_number; // 4512
+    assert_eq! {result, expected_result, "Result does not match: {} == {}", result, expected_result};
 
-    if result != expected_result {
-        panic! {"> Solution does not match expected result"};
-    }
+    println! {">>> Test Result A:\n\twinning_board={}, sum_unmarked={}, last_drawn={}\n\t=> score={}", winner_board_idx, sum_of_all_unmarked_cells, last_drawn_number, result}
 }
 
-// fn solution() {
-//     let measurements: Vec<usize> = include_str!("..\\solution_input.txt")
-//         .lines()
-//         // .inspect(|i| println!{"{} -> {:#14b}", i, usize::from_str_radix(i, 2).unwrap()})
-//         .map(|i| usize::from_str_radix(i, 2).unwrap())
-//         .collect();
-//     println!(
-//         "> Solution input ({}): {:?}",
-//         measurements.len(),
-//         measurements
-//     );
-//     let num_bits = 12;
-//     let oxygen_generator_rating = calculate_oxygen_generator_rating(&measurements, num_bits);
-//     let co2_scrubber_rating = calculate_co2_scrubber_rating(&measurements, num_bits);
-//     let result = oxygen_generator_rating * co2_scrubber_rating;
-//     println! {"> Solution:\t{} ({:#14b})\t*\t{} ({:#14b})\t-> {}", oxygen_generator_rating, oxygen_generator_rating, co2_scrubber_rating, co2_scrubber_rating, result}
-// }
+fn solution_a() {
+    let input_file = ".\\solution_input.txt";
+    let mut bingo = Bingo::from_file(input_file);
+    println!("> Solution input:\n{}", bingo);
+    let (winner_board_idx, sum_of_all_unmarked_cells, last_drawn_number) = bingo.play();
+    let result = sum_of_all_unmarked_cells * last_drawn_number;
 
-struct Bingo {
-    draw_numbers: Vec<usize>,
-    // boards: Vec<Board>,
+    println! {">>> Solution Result A:\n\twinning_board={}, sum_unmarked={}, last_drawn={}\n\t=> score={}", winner_board_idx, sum_of_all_unmarked_cells, last_drawn_number, result}
 }
 
-impl Bingo {
-    fn new(draw_numbers: Vec<usize>) -> Bingo {
-        Bingo {
-            draw_numbers: draw_numbers,
-            // boards: boards,
-        }
-    }
+fn local_test_b() {
+    let input_file = ".\\test_input.txt";
+    let mut bingo = Bingo::from_file(input_file);
+    println!("> Test input:\n{}", bingo);
+    let (last_board_idx, sum_of_all_unmarked_cells, last_drawn_number) =
+        bingo.play_for_last_board();
+    let result = sum_of_all_unmarked_cells * last_drawn_number;
 
-    fn from_file(filename: &str) -> Bingo {
-        let NEWLINE = "\r\n";
-        let DOUBLE_NEWLINE = "\r\n\r\n";
-        let WIDTH = 5;
-        let HEIGHT = 5;
+    let expected_last_board = 1;
+    assert_eq! {last_board_idx, expected_last_board, "Last Board Index mismatches: {} == {}", last_board_idx, expected_last_board}
+    // let expected_marked_numbers = vec![14, 21, 17, 24, 4];
+    let expected_sum_of_unmarked_numbers = 148;
+    assert_eq! {sum_of_all_unmarked_cells, expected_sum_of_unmarked_numbers, "Sum of marked numbers mismatches: {} == {}", sum_of_all_unmarked_cells, expected_sum_of_unmarked_numbers}
+    let expected_last_drawn_number = 13;
+    assert_eq! {last_drawn_number, expected_last_drawn_number, "Last drawn number mismatches: {} == {}", last_drawn_number, expected_last_drawn_number}
+    let expected_result = expected_sum_of_unmarked_numbers * expected_last_drawn_number; // 1924
+    assert_eq! {result, expected_result, "Result does not match: {} == {}", result, expected_result};
 
-        println!{">>> Starting to parse file {} <<<", filename}
-        let raw_data = fs::read_to_string(filename).unwrap();
-        let data_chunks: Vec<&str> = raw_data.split(DOUBLE_NEWLINE).collect();
-        
-        let raw_drawings = data_chunks[0];
-        let drawings: Vec<&str> = raw_drawings.split(",").collect();
-        println!{"Drawings ({}): {:?}", drawings.len(), drawings};
-
-        let raw_boards = &data_chunks[1..];
-        // let mut boards = vec![vec![0; WIDTH]; HEIGHT];
-        let boards:Vec<Vec<usize>> = &raw_boards
-            .into_iter()
-            .map(|board| board.split(NEWLINE).collect())
-            .map(|board:Vec<&str>| board.into_iter()
-                .map(|row| row.split_whitespace().collect())
-                .map(|row:Vec<&str>| row.into_iter()
-                    .map(|e| e.parse::<usize>().unwrap())
-                    .collect()
-                )
-                .collect()
-            )
-            .collect();
-
-        // for board in raw_boards {
-        //     println!{"-------------"}
-        //     let raw_rows: Vec<&str> = board.split(NEWLINE).collect();
-        //     for row in raw_rows {
-        //         let raw_row_elements: Vec<&str> = row.split_whitespace().collect();
-        //         let row_elements: Vec<usize> = raw_row_elements
-        //             .into_iter()
-        //             .map(|e| e.parse::<usize>().unwrap())
-        //             .collect();
-        //         println!{"{:?}", row_elements};
-        //     }
-        //     println!{"-------------\n"}
-        // }
-        println!{"Boards ({}): {:?}", boards.len(), boards};
-
-        let bingo = Bingo::new(vec![0]);
-        bingo
-    }
+    println! {">>> Test Result B:\n\tlast_board={}, sum_unmarked={}, last_drawn={}\n\t=> score={}", last_board_idx, sum_of_all_unmarked_cells, last_drawn_number, result}
 }
 
-struct Board {
-    width: usize,
-    height: usize,
-    fields: Vec<usize>,  // vec![vec![0; width]; height];
+fn solution_b() {
+    let input_file = ".\\solution_input.txt";
+    let mut bingo = Bingo::from_file(input_file);
+    println!("> Solution input:\n{}", bingo);
+    let (last_board_idx, sum_of_all_unmarked_cells, last_drawn_number) =
+        bingo.play_for_last_board();
+    let result = sum_of_all_unmarked_cells * last_drawn_number;
+
+    println! {">>> Solution Result B:\n\tlast_board={}, sum_unmarked={}, last_drawn={}\n\t=> score={}", last_board_idx, sum_of_all_unmarked_cells, last_drawn_number, result}
 }
