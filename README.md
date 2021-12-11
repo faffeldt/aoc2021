@@ -4,5 +4,11 @@ The solutions are primarily written in Rust.
 
 # How to create a solution for a day?
 ```bash
-cargo new day_X
+cargo new day_x
+```
+
+# How to run a solution?
+```bash
+cd day_x
+cargo run
 ```
