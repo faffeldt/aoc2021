@@ -34,35 +34,48 @@ impl HeightMap {
         HeightMap::new(heightmap, width, height)
     }
 
+    fn get_point_at(&self, x: usize, y: usize) -> usize {
+        if x >= 0 && x < self.width && y >= 0 && y < self.height {
+            self.heightmap[y * self.width + x]
+        } else {
+            panic!{"Cannot access point at x: {} y: {} (w: {}, h: {})", x, y, self.width, self.height}
+        }
+    }
+
+    fn get_adjacent_coordinates(&self, x: usize, y: usize) -> Vec<(usize, usize, usize)> {
+        let mut adjacent_coordinates = Vec::new();
+        if x > 0 {
+            // Check left
+            adjacent_coordinates.push((x - 1, y, self.get_point_at(x - 1, y)));
+        }
+        if x < self.width - 1 {
+            // Check right
+            adjacent_coordinates.push((x + 1, y, self.get_point_at(x + 1, y)));
+        }
+        if y > 0 {
+            // Check above
+            adjacent_coordinates.push((x, y - 1, self.get_point_at(x, y - 1)));
+        }
+        if y < self.height - 1 {
+            // Check below
+            adjacent_coordinates.push((x, y + 1, self.get_point_at(x, y + 1)));
+        }
+        adjacent_coordinates
+    }
+
     pub fn low_points(&self) -> Vec<usize> {
         let mut low_points: Vec<usize> = Vec::new();
         
         for y in 0..self.height {
             for x in 0..self.width {
                 let current = self.heightmap[y * self.width + x];
-                let mut is_low_point = true;
+                let adjacent_points = self.get_adjacent_coordinates(x, y);
+                let adjacent_lower_points: Vec<_> = adjacent_points
+                    .iter()
+                    .filter(|(_, _, p)| *p <= current)
+                    .collect();
 
-                if x > 0 {
-                    // Check left
-                    is_low_point &= current < self.heightmap[y * self.width + (x - 1)]
-                }
-                
-                if x < self.width - 1 {
-                    // Check right
-                    is_low_point &= current < self.heightmap[y * self.width + (x + 1)]
-                }
-
-                if y > 0 {
-                    // Check above
-                    is_low_point &= current < self.heightmap[(y - 1) * self.width + x]
-                }
-
-                if y < self.height - 1 {
-                    // Check below
-                    is_low_point &= current < self.heightmap[(y + 1) * self.width + x]
-                }
-                
-                if is_low_point {
+                if adjacent_lower_points.len() == 0 {
                     // println!{"DEBUG> Found low point at x:{} y:{} with value {}", x, y, current};
                     low_points.push(current);
                 }
@@ -80,13 +93,36 @@ impl HeightMap {
             .map(|&p| HeightMap::risk_of_height(p))
             .fold(0, |acc, r| acc + r)
     }
+
+    pub fn basins(&self) -> Vec<usize> {
+        let mut basins: Vec<(usize, usize)> = Vec::new();
+
+        // Iterate all points and cluster them in basins
+        for y in 0..self.height {
+            for x in 0..self.width {
+                let adjacent_points = vec![
+                    0,
+                ];
+            }
+        }
+
+        // println!{"DEBUG> All points: {:?}", all_points.collect::<Vec<(usize, usize)>>()};
+        vec![]
+    }
 }
 
 impl fmt::Display for HeightMap {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!{f, "Heightmap with {} measurements (w: {}, h: {}):\n", self.heightmap.len(), self.width, self.height};
         for row in self.heightmap.chunks(self.width) {
-            write!{f, "{:?}\n", row};
+            for &cell in row {
+                if cell == 9 {
+                    write!{f, "#"};
+                } else {
+                    write!{f, "{}", cell};
+                }
+            }
+            write!{f, "\n"};
         }
         write!{f, "=======================\n"}
     }
