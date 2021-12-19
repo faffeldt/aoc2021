@@ -42,7 +42,15 @@ impl HeightMap {
         }
     }
 
-    fn get_adjacent_coordinates(&self, x: usize, y: usize) -> Vec<(usize, usize, usize)> {
+    fn mark_point_at(&mut self, x: usize, y: usize) {
+        if x >= 0 && x < self.width && y >= 0 && y < self.height {
+            self.heightmap[y * self.width + x] = 10;
+        } else {
+            panic!{"Cannot access point at x: {} y: {} (w: {}, h: {})", x, y, self.width, self.height};
+        }
+    }
+
+    fn get_neighbours(&self, x: usize, y: usize) -> Vec<(usize, usize, usize)> {
         let mut adjacent_coordinates = Vec::new();
         if x > 0 {
             // Check left
@@ -69,8 +77,8 @@ impl HeightMap {
         for y in 0..self.height {
             for x in 0..self.width {
                 let current = self.heightmap[y * self.width + x];
-                let adjacent_points = self.get_adjacent_coordinates(x, y);
-                let adjacent_lower_points: Vec<_> = adjacent_points
+                let neighbours = self.get_neighbours(x, y);
+                let adjacent_lower_points: Vec<_> = neighbours
                     .iter()
                     .filter(|(_, _, p)| *p <= current)
                     .collect();
@@ -94,21 +102,43 @@ impl HeightMap {
             .fold(0, |acc, r| acc + r)
     }
 
-    pub fn basins(&self) -> Vec<usize> {
-        let mut basins: Vec<(usize, usize)> = Vec::new();
+    fn basin_contains_point(basin: &Vec<(usize, usize, usize)>, point: &(usize, usize, usize)) -> bool {
+        let result = basin.contains(point);
+        // println!{"DEBUG> Basin {:?} contains {:?}: {}", basin, point, result};
+        result
+    }
 
-        // Iterate all points and cluster them in basins
+    pub fn find_basins(&mut self) -> Vec<usize> {
+        let mut basins = vec![];
+         // Iterate all points and cluster them in basins
         for y in 0..self.height {
             for x in 0..self.width {
-                let adjacent_points = vec![
-                    0,
-                ];
+                if self.get_point_at(x, y) < 9 {
+                    basins.push(self.basin(x, y));
+                    println!{"DEBUG> After basin() for x:{} y:{}\nBasins: {:?}", x, y, basins};
+                }
             }
         }
-
-        // println!{"DEBUG> All points: {:?}", all_points.collect::<Vec<(usize, usize)>>()};
-        vec![]
+        basins
     }
+
+    fn basin(&mut self, x: usize, y: usize) -> usize {
+        // Mark current point as visited
+        self.mark_point_at(x, y);
+        let neighbours = self.get_neighbours(x, y);
+        // println!{"DEBUG> Marked c=({}, {})\nNeighbours: {:?}\n{}", x, y, neighbours, self};
+        println!{"DEBUG> Marked c=({}, {})", x, y};
+        let mut sum = 1;
+        for (n_x, n_y, n_value) in neighbours {
+            if n_value < 9 {
+                sum += self.basin(n_x, n_y);
+                // println!{"DEBUG> c=({}, {}) n=({}, {}) sum:{}\n{}", x, y, n_x, n_y, sum, self};
+            }
+        }
+        println!{"Sum after recursion of c=({}, {}): {}", x, y, sum};
+        sum
+    }
+
 }
 
 impl fmt::Display for HeightMap {
@@ -118,12 +148,15 @@ impl fmt::Display for HeightMap {
             for &cell in row {
                 if cell == 9 {
                     write!{f, "#"};
+                } else if cell == 10 {
+                    write!{f, "*"};
                 } else {
                     write!{f, "{}", cell};
                 }
             }
             write!{f, "\n"};
         }
-        write!{f, "=======================\n"}
+        // write!{f, "=======================\n"}
+        write!{f, ""}
     }
 }
