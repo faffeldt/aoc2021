@@ -171,16 +171,16 @@ fn local_test_b() {
     println! {"TEST B Big> Perform steps to 193"};
     octopus_field.step_x_times(193);
     let exp_octo_step_193 = vec![
-        vec![5,8,7,7,7,7,7,7,7,7],
-        vec![8,8,7,7,7,7,7,7,7,7],
-        vec![7,7,7,7,7,7,7,7,7,7],
-        vec![7,7,7,7,7,7,7,7,7,7],
-        vec![7,7,7,7,7,7,7,7,7,7],
-        vec![7,7,7,7,7,7,7,7,7,7],
-        vec![7,7,7,7,7,7,7,7,7,7],
-        vec![7,7,7,7,7,7,7,7,7,7],
-        vec![7,7,7,7,7,7,7,7,7,7],
-        vec![7,7,7,7,7,7,7,7,7,7],
+        vec![5, 8, 7, 7, 7, 7, 7, 7, 7, 7],
+        vec![8, 8, 7, 7, 7, 7, 7, 7, 7, 7],
+        vec![7, 7, 7, 7, 7, 7, 7, 7, 7, 7],
+        vec![7, 7, 7, 7, 7, 7, 7, 7, 7, 7],
+        vec![7, 7, 7, 7, 7, 7, 7, 7, 7, 7],
+        vec![7, 7, 7, 7, 7, 7, 7, 7, 7, 7],
+        vec![7, 7, 7, 7, 7, 7, 7, 7, 7, 7],
+        vec![7, 7, 7, 7, 7, 7, 7, 7, 7, 7],
+        vec![7, 7, 7, 7, 7, 7, 7, 7, 7, 7],
+        vec![7, 7, 7, 7, 7, 7, 7, 7, 7, 7],
     ];
     let octo_step_193 = octopus_field.get_octopuses();
     assert_eq! {exp_octo_step_193, octo_step_193, "TEST B Big> Octopuses mismatch after step 193"};
@@ -190,16 +190,16 @@ fn local_test_b() {
     println! {"TEST B Big> Perform step 194"};
     octopus_field.step();
     let exp_octo_step_194 = vec![
-        vec![6,9,8,8,8,8,8,8,8,8],
-        vec![9,9,8,8,8,8,8,8,8,8],
-        vec![8,8,8,8,8,8,8,8,8,8],
-        vec![8,8,8,8,8,8,8,8,8,8],
-        vec![8,8,8,8,8,8,8,8,8,8],
-        vec![8,8,8,8,8,8,8,8,8,8],
-        vec![8,8,8,8,8,8,8,8,8,8],
-        vec![8,8,8,8,8,8,8,8,8,8],
-        vec![8,8,8,8,8,8,8,8,8,8],
-        vec![8,8,8,8,8,8,8,8,8,8],
+        vec![6, 9, 8, 8, 8, 8, 8, 8, 8, 8],
+        vec![9, 9, 8, 8, 8, 8, 8, 8, 8, 8],
+        vec![8, 8, 8, 8, 8, 8, 8, 8, 8, 8],
+        vec![8, 8, 8, 8, 8, 8, 8, 8, 8, 8],
+        vec![8, 8, 8, 8, 8, 8, 8, 8, 8, 8],
+        vec![8, 8, 8, 8, 8, 8, 8, 8, 8, 8],
+        vec![8, 8, 8, 8, 8, 8, 8, 8, 8, 8],
+        vec![8, 8, 8, 8, 8, 8, 8, 8, 8, 8],
+        vec![8, 8, 8, 8, 8, 8, 8, 8, 8, 8],
+        vec![8, 8, 8, 8, 8, 8, 8, 8, 8, 8],
     ];
     let octo_step_194 = octopus_field.get_octopuses();
     assert_eq! {exp_octo_step_194, octo_step_194, "TEST B Big> Octopuses mismatch after step 194"};
@@ -209,16 +209,16 @@ fn local_test_b() {
     println! {"TEST B Big> Perform steps to 195"};
     octopus_field.step();
     let exp_octo_step_195 = vec![
-        vec![0,0,0,0,0,0,0,0,0,0],
-        vec![0,0,0,0,0,0,0,0,0,0],
-        vec![0,0,0,0,0,0,0,0,0,0],
-        vec![0,0,0,0,0,0,0,0,0,0],
-        vec![0,0,0,0,0,0,0,0,0,0],
-        vec![0,0,0,0,0,0,0,0,0,0],
-        vec![0,0,0,0,0,0,0,0,0,0],
-        vec![0,0,0,0,0,0,0,0,0,0],
-        vec![0,0,0,0,0,0,0,0,0,0],
-        vec![0,0,0,0,0,0,0,0,0,0],
+        vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     ];
     let octo_step_195 = octopus_field.get_octopuses();
     assert_eq! {exp_octo_step_195, octo_step_195, "TEST B Big> Octopuses mismatch after step 195"};
@@ -229,16 +229,16 @@ fn local_test_b() {
     octopus_field = OctopusField::parse_input(input);
     octopus_field.step_until_all_flash();
     let exp_octo_step_all_flash = vec![
-        vec![0,0,0,0,0,0,0,0,0,0],
-        vec![0,0,0,0,0,0,0,0,0,0],
-        vec![0,0,0,0,0,0,0,0,0,0],
-        vec![0,0,0,0,0,0,0,0,0,0],
-        vec![0,0,0,0,0,0,0,0,0,0],
-        vec![0,0,0,0,0,0,0,0,0,0],
-        vec![0,0,0,0,0,0,0,0,0,0],
-        vec![0,0,0,0,0,0,0,0,0,0],
-        vec![0,0,0,0,0,0,0,0,0,0],
-        vec![0,0,0,0,0,0,0,0,0,0],
+        vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        vec![0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     ];
     let exp_step_all_flashed = 195;
     let octo_step_all_flash = octopus_field.get_octopuses();
@@ -251,11 +251,12 @@ fn local_test_b() {
 
 fn solution_b() {
     let input_file = ".\\solution_input.txt";
-    let input = fs::read_to_string(&input_file).unwrap_or_else(|_| panic!("Error reading file {}", input_file));
+    let input = fs::read_to_string(&input_file)
+        .unwrap_or_else(|_| panic!("Error reading file {}", input_file));
     let mut octopus_field = OctopusField::parse_input(input);
-    println!{"SOLUTION B> Input:\n{}", octopus_field};
+    println! {"SOLUTION B> Input:\n{}", octopus_field};
 
     octopus_field.step_until_all_flash();
 
-    println!{"SOLUTION B> Final octopus field:\n{}", octopus_field};
+    println! {"SOLUTION B> Final octopus field:\n{}", octopus_field};
 }
