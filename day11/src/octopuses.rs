@@ -38,12 +38,32 @@ impl OctopusField {
         OctopusField::new(octopuses, height, width)
     }
 
+    pub fn get_octopuses(&self) -> Vec<Vec<usize>> {
+        self.octopuses.clone()
+    }
+
     pub fn get_flashes(&self) -> usize {
         self.flashes
     }
 
-    pub fn get_octopuses(&self) -> Vec<Vec<usize>> {
-        self.octopuses.clone()
+    pub fn get_step(&self) -> usize {
+        self.step
+    }
+
+    fn all_flashed(&self) -> bool {
+        let mut all_flashed = true;
+        for y in 0..self.height {
+            for x in 0..self.width {
+                all_flashed &= self.octopuses[y][x] == 0;
+                if !all_flashed {
+                    break;
+                }
+            }
+            if !all_flashed {
+                break;
+            }
+        }
+        all_flashed
     }
 
     pub fn step(&mut self) {
@@ -110,6 +130,12 @@ impl OctopusField {
             self.step();
         }
     }
+
+    pub fn step_until_all_flash(&mut self) {
+        while !self.all_flashed() {
+            self.step();
+        }
+    }
 }
 
 impl fmt::Display for OctopusField {
@@ -127,7 +153,6 @@ impl fmt::Display for OctopusField {
             }
             write! {f, "\n"};
         }
-        // write!{f, "=======================\n"}
         write! {f, ""}
     }
 }
