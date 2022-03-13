@@ -116,8 +116,7 @@ impl Packet {
                     let subpacket_num_raw =
                         buffer[length_start_idx..subpacket_num_end_idx].to_bitvec();
                     let subpacket_num = subpacket_num_raw.load_be::<u32>().clone();
-                    println! {"DEBUG: Parsing operator with num subpackets known: raw={:?} num={:?}",
-                        subpacket_num_raw,
+                    println! {"DEBUG: Parsing operator with num subpackets known: num={:?}",
                         subpacket_num
                     };
                     // Move index to start of subpackets
@@ -125,8 +124,9 @@ impl Packet {
                     // Try to create the specified number of subpackets
                     let mut subpackets = Vec::new();
                     let mut subpacket_current_idx = subpacket_start_idx;
-                    for i in [0..subpacket_num] {
+                    for i in 0..subpacket_num {
                         let subpacket = Packet::new(buffer, &mut subpacket_current_idx);
+                        // println! {"> DEBUG: [{:?}] new subpacket: {}", i, subpacket}
                         subpackets.push(subpacket);
                     }
                     // Update index to be at end of subpackages
