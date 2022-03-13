@@ -349,55 +349,60 @@ mod tests {
         );
     }
 
-    #[test]
-    fn test_packet_equality_operator_and_literal_value() {
-        let packet_literal_2021_struct: Packet = Packet {
+    fn packet_literal_2021_struct() -> Packet {
+        Packet {
             version: 6, // 110
             type_id: 4, // 100
             // [1]0111 + [1]1110 + [0]0101 -> 011111100101  First bit controls if end
             packet_type: PacketType::LiteralValue(2021),
-        };
-        let packet_operator_0_struct: Packet = Packet {
-            version: 1, // 001
-            type_id: 6, // 110
-            packet_type: PacketType::OperatorPacket(vec![
-                Packet {
-                    version: 6,
-                    type_id: 4,
-                    packet_type: PacketType::LiteralValue(10),
-                },
-                Packet {
-                    version: 6,
-                    type_id: 4,
-                    packet_type: PacketType::LiteralValue(20),
-                },
-            ]),
-        };
-        assert_eq!(
-            packet_literal_2021_struct == packet_operator_0_struct,
-            false
-        );
+        }
     }
 
-    #[test]
-    fn test_packet_equality_operator_and_operator_simple() {
-        let packet_operator_0_struct: Packet = Packet {
+    fn packet_operator_0_struct() -> Packet {
+        Packet {
             version: 1, // 001
             type_id: 6, // 110
             packet_type: PacketType::OperatorPacket(vec![
                 Packet {
-                    version: 6,
-                    type_id: 4,
+                    version: 6, // 110
+                    type_id: 4, // 100
                     packet_type: PacketType::LiteralValue(10),
                 },
                 Packet {
-                    version: 6,
-                    type_id: 4,
+                    version: 2, // 110
+                    type_id: 4, // 100
                     packet_type: PacketType::LiteralValue(20),
                 },
             ]),
-        };
-        let packet_operator_other_struct: Packet = Packet {
+        }
+    }
+
+    fn packet_operator_1_struct() -> Packet {
+        Packet {
+            version: 7, // 111
+            type_id: 3, // 011
+            packet_type: PacketType::OperatorPacket(vec![
+                Packet {
+                    version: 2, // 010
+                    type_id: 4, // 100
+                    packet_type: PacketType::LiteralValue(1),
+                },
+                Packet {
+                    version: 4, // 100
+                    type_id: 4, // 100
+                    packet_type: PacketType::LiteralValue(2),
+                },
+                Packet {
+                    version: 1, // 001
+                    type_id: 4, // 100
+                    packet_type: PacketType::LiteralValue(3),
+                },
+            ]),
+        }
+    }
+
+    fn packet_operator_other_struct() -> Packet {
+        Packet {
             version: 1, // 111
             type_id: 6, // 011
             packet_type: PacketType::OperatorPacket(vec![
@@ -412,8 +417,11 @@ mod tests {
                     packet_type: PacketType::LiteralValue(80),
                 },
             ]),
-        };
-        let packet_operator_other_longer_struct: Packet = Packet {
+        }
+    }
+
+    fn packet_operator_other_longer_struct() -> Packet {
+        Packet {
             version: 1, // 111
             type_id: 6, // 011
             packet_type: PacketType::OperatorPacket(vec![
@@ -433,49 +441,11 @@ mod tests {
                     packet_type: PacketType::LiteralValue(90),
                 },
             ]),
-        };
-        assert_eq!(packet_operator_0_struct == packet_operator_0_struct, true);
-        assert_eq!(
-            packet_operator_other_struct == packet_operator_other_struct,
-            true
-        );
-        assert_eq!(
-            packet_operator_other_longer_struct == packet_operator_other_longer_struct,
-            true
-        );
-        assert_eq!(
-            packet_operator_0_struct == packet_operator_other_struct,
-            false
-        );
-        assert_eq!(
-            packet_operator_0_struct == packet_operator_other_longer_struct,
-            false
-        );
-        assert_eq!(
-            packet_operator_other_struct == packet_operator_other_longer_struct,
-            false
-        );
+        }
     }
 
-    #[test]
-    fn test_packet_equality_operator_and_operator_complex() {
-        let packet_operator_0_struct: Packet = Packet {
-            version: 1,
-            type_id: 6,
-            packet_type: PacketType::OperatorPacket(vec![
-                Packet {
-                    version: 6,
-                    type_id: 4,
-                    packet_type: PacketType::LiteralValue(10),
-                },
-                Packet {
-                    version: 6,
-                    type_id: 4,
-                    packet_type: PacketType::LiteralValue(20),
-                },
-            ]),
-        };
-        let packet_operator_nested_struct: Packet = Packet {
+    fn packet_operator_nested_struct() -> Packet {
+        Packet {
             version: 4,
             type_id: 5,
             packet_type: PacketType::OperatorPacket(vec![Packet {
@@ -491,8 +461,11 @@ mod tests {
                     }]),
                 }]),
             }]),
-        };
-        let packet_operator_double_nested_0_struct: Packet = Packet {
+        }
+    }
+
+    fn packet_operator_double_nested_0_struct() -> Packet {
+        Packet {
             version: 3,
             type_id: 5,
             packet_type: PacketType::OperatorPacket(vec![
@@ -529,8 +502,11 @@ mod tests {
                     ]),
                 },
             ]),
-        };
-        let packet_operator_double_nested_1_struct: Packet = Packet {
+        }
+    }
+
+    fn packet_operator_double_nested_1_struct() -> Packet {
+        Packet {
             version: 3,
             type_id: 5,
             packet_type: PacketType::OperatorPacket(vec![
@@ -567,499 +543,347 @@ mod tests {
                     ]),
                 },
             ]),
-        };
+        }
+    }
+
+    fn packet_operator_3_nested_struct() -> Packet {
+        Packet {
+            version: 4,
+            type_id: 2,
+            packet_type: PacketType::OperatorPacket(vec![Packet {
+                version: 1,
+                type_id: 2,
+                packet_type: PacketType::OperatorPacket(vec![Packet {
+                    version: 5,
+                    type_id: 2,
+                    packet_type: PacketType::OperatorPacket(vec![Packet {
+                        version: 6,
+                        type_id: 4,
+                        packet_type: PacketType::LiteralValue(15),
+                    }]),
+                }]),
+            }]),
+        }
+    }
+
+    fn packet_operator_balanced_tree_struct() -> Packet {
+        Packet {
+            version: 3,
+            type_id: 0,
+            packet_type: PacketType::OperatorPacket(vec![
+                Packet {
+                    version: 0,
+                    type_id: 0,
+                    packet_type: PacketType::OperatorPacket(vec![
+                        Packet {
+                            version: 0,
+                            type_id: 4,
+                            packet_type: PacketType::LiteralValue(10),
+                        },
+                        Packet {
+                            version: 5,
+                            type_id: 4,
+                            packet_type: PacketType::LiteralValue(11),
+                        },
+                    ]),
+                },
+                Packet {
+                    version: 1,
+                    type_id: 0,
+                    packet_type: PacketType::OperatorPacket(vec![
+                        Packet {
+                            version: 0,
+                            type_id: 4,
+                            packet_type: PacketType::LiteralValue(12),
+                        },
+                        Packet {
+                            version: 3,
+                            type_id: 4,
+                            packet_type: PacketType::LiteralValue(13),
+                        },
+                    ]),
+                },
+            ]),
+        }
+    }
+
+    fn packet_operator_balanced_tree_different_length_struct() -> Packet {
+        Packet {
+            version: 6,
+            type_id: 0,
+            packet_type: PacketType::OperatorPacket(vec![
+                Packet {
+                    version: 0,
+                    type_id: 0,
+                    packet_type: PacketType::OperatorPacket(vec![
+                        Packet {
+                            version: 0,
+                            type_id: 4,
+                            packet_type: PacketType::LiteralValue(10),
+                        },
+                        Packet {
+                            version: 6,
+                            type_id: 4,
+                            packet_type: PacketType::LiteralValue(11),
+                        },
+                    ]),
+                },
+                Packet {
+                    version: 4,
+                    type_id: 0,
+                    packet_type: PacketType::OperatorPacket(vec![
+                        Packet {
+                            version: 7,
+                            type_id: 4,
+                            packet_type: PacketType::LiteralValue(12),
+                        },
+                        Packet {
+                            version: 0,
+                            type_id: 4,
+                            packet_type: PacketType::LiteralValue(13),
+                        },
+                    ]),
+                },
+            ]),
+        }
+    }
+
+    fn operator_with_operator_with_operator_with_5_values_struct() -> Packet {
+        Packet {
+            version: 5,
+            type_id: 0,
+            packet_type: PacketType::OperatorPacket(vec![Packet {
+                version: 1,
+                type_id: 0,
+                packet_type: PacketType::OperatorPacket(vec![Packet {
+                    version: 3,
+                    type_id: 0,
+                    packet_type: PacketType::OperatorPacket(vec![
+                        Packet {
+                            version: 7,
+                            type_id: 4,
+                            packet_type: PacketType::LiteralValue(6),
+                        },
+                        Packet {
+                            version: 6,
+                            type_id: 4,
+                            packet_type: PacketType::LiteralValue(6),
+                        },
+                        Packet {
+                            version: 5,
+                            type_id: 4,
+                            packet_type: PacketType::LiteralValue(12),
+                        },
+                        Packet {
+                            version: 2,
+                            type_id: 4,
+                            packet_type: PacketType::LiteralValue(15),
+                        },
+                        Packet {
+                            version: 2,
+                            type_id: 4,
+                            packet_type: PacketType::LiteralValue(15),
+                        },
+                    ]),
+                }]),
+            }]),
+        }
+    }
+
+    #[test]
+    fn test_packet_equality_operator_and_literal_value() {
+        assert_eq!(
+            packet_literal_2021_struct() == packet_operator_0_struct(),
+            false
+        );
+    }
+
+    #[test]
+    fn test_packet_equality_operator_and_operator_simple() {
+        assert_eq!(
+            packet_operator_0_struct() == packet_operator_0_struct(),
+            true
+        );
+        assert_eq!(
+            packet_operator_other_struct() == packet_operator_other_struct(),
+            true
+        );
+        assert_eq!(
+            packet_operator_other_longer_struct() == packet_operator_other_longer_struct(),
+            true
+        );
+        assert_eq!(
+            packet_operator_0_struct() == packet_operator_other_struct(),
+            false
+        );
+        assert_eq!(
+            packet_operator_0_struct() == packet_operator_other_longer_struct(),
+            false
+        );
+        assert_eq!(
+            packet_operator_other_struct() == packet_operator_other_longer_struct(),
+            false
+        );
+    }
+
+    #[test]
+    fn test_packet_equality_operator_and_operator_complex() {
         // Self equalities
-        assert_eq!(packet_operator_0_struct == packet_operator_0_struct, true);
         assert_eq!(
-            packet_operator_nested_struct == packet_operator_nested_struct,
+            packet_operator_0_struct() == packet_operator_0_struct(),
             true
         );
         assert_eq!(
-            packet_operator_double_nested_0_struct == packet_operator_double_nested_0_struct,
+            packet_operator_nested_struct() == packet_operator_nested_struct(),
             true
         );
         assert_eq!(
-            packet_operator_double_nested_1_struct == packet_operator_double_nested_1_struct,
+            packet_operator_double_nested_0_struct() == packet_operator_double_nested_0_struct(),
+            true
+        );
+        assert_eq!(
+            packet_operator_double_nested_1_struct() == packet_operator_double_nested_1_struct(),
             true
         );
         // Inequality with others
         assert_eq!(
-            packet_operator_0_struct == packet_operator_nested_struct,
+            packet_operator_0_struct() == packet_operator_nested_struct(),
             false
         );
         assert_eq!(
-            packet_operator_0_struct == packet_operator_double_nested_0_struct,
+            packet_operator_0_struct() == packet_operator_double_nested_0_struct(),
             false
         );
         assert_eq!(
-            packet_operator_0_struct == packet_operator_double_nested_1_struct,
+            packet_operator_0_struct() == packet_operator_double_nested_1_struct(),
             false
         );
         assert_eq!(
-            packet_operator_nested_struct == packet_operator_double_nested_0_struct,
+            packet_operator_nested_struct() == packet_operator_double_nested_0_struct(),
             false
         );
         assert_eq!(
-            packet_operator_nested_struct == packet_operator_double_nested_1_struct,
+            packet_operator_nested_struct() == packet_operator_double_nested_1_struct(),
             false
         );
         assert_eq!(
-            packet_operator_double_nested_0_struct == packet_operator_double_nested_1_struct,
+            packet_operator_double_nested_0_struct() == packet_operator_double_nested_1_struct(),
             false
         );
     }
 
     #[test]
     fn test_create_literal_packet() {
-        let packet_literal_2021_struct: Packet = Packet {
-            version: 6, // 110
-            type_id: 4, // 100
-            // [1]0111 + [1]1110 + [0]0101 -> 011111100101  First bit controls if end
-            packet_type: PacketType::LiteralValue(2021),
-        };
         let packet_literal_2021_bitvec = hex_str_to_bitvec(packet_literal_2021_hex);
         assert_eq!(
             Packet::new(&packet_literal_2021_bitvec, &mut 0),
-            packet_literal_2021_struct
+            packet_literal_2021_struct()
         );
         assert_eq!(
             Packet::from_hex_str(packet_literal_2021_hex),
-            packet_literal_2021_struct
+            packet_literal_2021_struct()
         );
     }
 
     #[test]
     fn test_literal_packet_version_sum() {
-        let packet_literal_2021_struct: Packet = Packet {
-            version: 6, // 110
-            type_id: 4, // 100
-            // [1]0111 + [1]1110 + [0]0101 -> 011111100101  First bit controls if end
-            packet_type: PacketType::LiteralValue(2021),
-        };
-        assert_eq!(packet_literal_2021_struct.version_sum(), 6);
+        assert_eq!(packet_literal_2021_struct().version_sum(), 6);
     }
 
     #[test]
     fn test_create_operator_packet_with_two_literal_value_packets() {
-        let packet_operator_0_struct: Packet = Packet {
-            version: 1, // 001
-            type_id: 6, // 110
-            packet_type: PacketType::OperatorPacket(vec![
-                Packet {
-                    version: 6, // 110
-                    type_id: 4, // 100
-                    packet_type: PacketType::LiteralValue(10),
-                },
-                Packet {
-                    version: 2, // 110
-                    type_id: 4, // 100
-                    packet_type: PacketType::LiteralValue(20),
-                },
-            ]),
-        };
         assert_eq!(
             Packet::from_hex_str(packet_operator_0_hex),
-            packet_operator_0_struct
+            packet_operator_0_struct()
         );
     }
 
     #[test]
     fn test_operator_packet_with_two_literal_value_packets_version_sum() {
-        let packet_operator_0_struct: Packet = Packet {
-            version: 1, // 001
-            type_id: 6, // 110
-            packet_type: PacketType::OperatorPacket(vec![
-                Packet {
-                    version: 6, // 110
-                    type_id: 4, // 100
-                    packet_type: PacketType::LiteralValue(10),
-                },
-                Packet {
-                    version: 2, // 110
-                    type_id: 4, // 100
-                    packet_type: PacketType::LiteralValue(20),
-                },
-            ]),
-        };
-        assert_eq!(packet_operator_0_struct.version_sum(), 9);
+        assert_eq!(packet_operator_0_struct().version_sum(), 9);
     }
 
     #[test]
     fn test_create_operator_packet_with_multiple_literal_value_packets() {
-        let packet_operator_1_struct: Packet = Packet {
-            version: 7, // 111
-            type_id: 3, // 011
-            packet_type: PacketType::OperatorPacket(vec![
-                Packet {
-                    version: 2, // 010
-                    type_id: 4, // 100
-                    packet_type: PacketType::LiteralValue(1),
-                },
-                Packet {
-                    version: 4, // 100
-                    type_id: 4, // 100
-                    packet_type: PacketType::LiteralValue(2),
-                },
-                Packet {
-                    version: 1, // 001
-                    type_id: 4, // 100
-                    packet_type: PacketType::LiteralValue(3),
-                },
-            ]),
-        };
         assert_eq!(
             Packet::from_hex_str(packet_operator_1_hex),
-            packet_operator_1_struct
+            packet_operator_1_struct()
         );
     }
 
     #[test]
     fn test_operator_packet_with_multiple_literal_value_packets_version_sum() {
-        let packet_operator_1_struct: Packet = Packet {
-            version: 7, // 111
-            type_id: 3, // 011
-            packet_type: PacketType::OperatorPacket(vec![
-                Packet {
-                    version: 2, // 010
-                    type_id: 4, // 100
-                    packet_type: PacketType::LiteralValue(1),
-                },
-                Packet {
-                    version: 4, // 100
-                    type_id: 4, // 100
-                    packet_type: PacketType::LiteralValue(2),
-                },
-                Packet {
-                    version: 1, // 001
-                    type_id: 4, // 100
-                    packet_type: PacketType::LiteralValue(3),
-                },
-            ]),
-        };
-        assert_eq!(packet_operator_1_struct.version_sum(), 14);
+        assert_eq!(packet_operator_1_struct().version_sum(), 14);
     }
 
     #[test]
     fn test_create_3_nested_operator_packets() {
         const packet_operator_3_nested_hex: &str = "8A004A801A8002F478";
-        let packet_operator_3_nested_struct: Packet = Packet {
-            version: 4,
-            type_id: 2,
-            packet_type: PacketType::OperatorPacket(vec![Packet {
-                version: 1,
-                type_id: 2,
-                packet_type: PacketType::OperatorPacket(vec![Packet {
-                    version: 5,
-                    type_id: 2,
-                    packet_type: PacketType::OperatorPacket(vec![Packet {
-                        version: 6,
-                        type_id: 4,
-                        packet_type: PacketType::LiteralValue(15),
-                    }]),
-                }]),
-            }]),
-        };
+
         assert_eq!(
             Packet::from_hex_str(packet_operator_3_nested_hex),
-            packet_operator_3_nested_struct
+            packet_operator_3_nested_struct()
         );
     }
 
     #[test]
     fn test_3_nested_operator_packets_version_sum() {
         const packet_operator_3_nested_hex: &str = "8A004A801A8002F478";
-        let packet_operator_3_nested_struct: Packet = Packet {
-            version: 4,
-            type_id: 2,
-            packet_type: PacketType::OperatorPacket(vec![Packet {
-                version: 1,
-                type_id: 2,
-                packet_type: PacketType::OperatorPacket(vec![Packet {
-                    version: 5,
-                    type_id: 2,
-                    packet_type: PacketType::OperatorPacket(vec![Packet {
-                        version: 6,
-                        type_id: 4,
-                        packet_type: PacketType::LiteralValue(15),
-                    }]),
-                }]),
-            }]),
-        };
-        assert_eq!(packet_operator_3_nested_struct.version_sum(), 16);
+        assert_eq!(packet_operator_3_nested_struct().version_sum(), 16);
     }
 
     #[test]
     fn test_create_balanced_tree_operator_packets() {
-        const packet_operator_3_nested_hex: &str = "620080001611562C8802118E34";
-        let packet_operator_3_nested_struct: Packet = Packet {
-            version: 3,
-            type_id: 0,
-            packet_type: PacketType::OperatorPacket(vec![
-                Packet {
-                    version: 0,
-                    type_id: 0,
-                    packet_type: PacketType::OperatorPacket(vec![
-                        Packet {
-                            version: 0,
-                            type_id: 4,
-                            packet_type: PacketType::LiteralValue(10),
-                        },
-                        Packet {
-                            version: 5,
-                            type_id: 4,
-                            packet_type: PacketType::LiteralValue(11),
-                        },
-                    ]),
-                },
-                Packet {
-                    version: 1,
-                    type_id: 0,
-                    packet_type: PacketType::OperatorPacket(vec![
-                        Packet {
-                            version: 0,
-                            type_id: 4,
-                            packet_type: PacketType::LiteralValue(12),
-                        },
-                        Packet {
-                            version: 3,
-                            type_id: 4,
-                            packet_type: PacketType::LiteralValue(13),
-                        },
-                    ]),
-                },
-            ]),
-        };
+        const packet_operator_balanced_tree_hex: &str = "620080001611562C8802118E34";
         assert_eq!(
-            Packet::from_hex_str(packet_operator_3_nested_hex),
-            packet_operator_3_nested_struct
+            Packet::from_hex_str(packet_operator_balanced_tree_hex),
+            packet_operator_balanced_tree_struct()
         );
     }
 
     #[test]
     fn test_balanced_tree_operator_packets_version_sum() {
-        const packet_operator_3_nested_hex: &str = "620080001611562C8802118E34";
-        let packet_operator_3_nested_struct: Packet = Packet {
-            version: 3,
-            type_id: 0,
-            packet_type: PacketType::OperatorPacket(vec![
-                Packet {
-                    version: 0,
-                    type_id: 0,
-                    packet_type: PacketType::OperatorPacket(vec![
-                        Packet {
-                            version: 0,
-                            type_id: 4,
-                            packet_type: PacketType::LiteralValue(10),
-                        },
-                        Packet {
-                            version: 5,
-                            type_id: 4,
-                            packet_type: PacketType::LiteralValue(11),
-                        },
-                    ]),
-                },
-                Packet {
-                    version: 1,
-                    type_id: 0,
-                    packet_type: PacketType::OperatorPacket(vec![
-                        Packet {
-                            version: 0,
-                            type_id: 4,
-                            packet_type: PacketType::LiteralValue(12),
-                        },
-                        Packet {
-                            version: 3,
-                            type_id: 4,
-                            packet_type: PacketType::LiteralValue(13),
-                        },
-                    ]),
-                },
-            ]),
-        };
-        assert_eq!(packet_operator_3_nested_struct.version_sum(), 12);
+        const packet_operator_balanced_tree_hex: &str = "620080001611562C8802118E34";
+        assert_eq!(packet_operator_balanced_tree_struct().version_sum(), 12);
     }
 
     #[test]
     fn test_create_balanced_tree_operator_packets_different_length_type() {
-        const packet_operator_3_nested_hex: &str = "C0015000016115A2E0802F182340";
-        let packet_operator_3_nested_struct: Packet = Packet {
-            version: 6,
-            type_id: 0,
-            packet_type: PacketType::OperatorPacket(vec![
-                Packet {
-                    version: 0,
-                    type_id: 0,
-                    packet_type: PacketType::OperatorPacket(vec![
-                        Packet {
-                            version: 0,
-                            type_id: 4,
-                            packet_type: PacketType::LiteralValue(10),
-                        },
-                        Packet {
-                            version: 6,
-                            type_id: 4,
-                            packet_type: PacketType::LiteralValue(11),
-                        },
-                    ]),
-                },
-                Packet {
-                    version: 4,
-                    type_id: 0,
-                    packet_type: PacketType::OperatorPacket(vec![
-                        Packet {
-                            version: 7,
-                            type_id: 4,
-                            packet_type: PacketType::LiteralValue(12),
-                        },
-                        Packet {
-                            version: 0,
-                            type_id: 4,
-                            packet_type: PacketType::LiteralValue(13),
-                        },
-                    ]),
-                },
-            ]),
-        };
+        const packet_operator_balanced_tree_different_length_hex: &str =
+            "C0015000016115A2E0802F182340";
         assert_eq!(
-            Packet::from_hex_str(packet_operator_3_nested_hex),
-            packet_operator_3_nested_struct
+            Packet::from_hex_str(packet_operator_balanced_tree_different_length_hex),
+            packet_operator_balanced_tree_different_length_struct()
         );
     }
 
     #[test]
     fn test_balanced_tree_operator_packets_different_length_type_version_sum() {
-        const packet_operator_3_nested_hex: &str = "C0015000016115A2E0802F182340";
-        let packet_operator_3_nested_struct: Packet = Packet {
-            version: 6,
-            type_id: 0,
-            packet_type: PacketType::OperatorPacket(vec![
-                Packet {
-                    version: 0,
-                    type_id: 0,
-                    packet_type: PacketType::OperatorPacket(vec![
-                        Packet {
-                            version: 0,
-                            type_id: 4,
-                            packet_type: PacketType::LiteralValue(10),
-                        },
-                        Packet {
-                            version: 6,
-                            type_id: 4,
-                            packet_type: PacketType::LiteralValue(11),
-                        },
-                    ]),
-                },
-                Packet {
-                    version: 4,
-                    type_id: 0,
-                    packet_type: PacketType::OperatorPacket(vec![
-                        Packet {
-                            version: 7,
-                            type_id: 4,
-                            packet_type: PacketType::LiteralValue(12),
-                        },
-                        Packet {
-                            version: 0,
-                            type_id: 4,
-                            packet_type: PacketType::LiteralValue(13),
-                        },
-                    ]),
-                },
-            ]),
-        };
-        assert_eq!(packet_operator_3_nested_struct.version_sum(), 23);
+        const packet_operator_balanced_tree_different_length_hex: &str =
+            "C0015000016115A2E0802F182340";
+        assert_eq!(
+            packet_operator_balanced_tree_different_length_struct().version_sum(),
+            23
+        );
     }
 
     #[test]
     fn test_create_operator_with_operator_with_operator_with_5_values() {
-        const packet_operator_3_nested_hex: &str = "A0016C880162017C3686B18A3D4780";
-        let packet_operator_3_nested_struct: Packet = Packet {
-            version: 5,
-            type_id: 0,
-            packet_type: PacketType::OperatorPacket(vec![Packet {
-                version: 1,
-                type_id: 0,
-                packet_type: PacketType::OperatorPacket(vec![Packet {
-                    version: 3,
-                    type_id: 0,
-                    packet_type: PacketType::OperatorPacket(vec![
-                        Packet {
-                            version: 7,
-                            type_id: 4,
-                            packet_type: PacketType::LiteralValue(6),
-                        },
-                        Packet {
-                            version: 6,
-                            type_id: 4,
-                            packet_type: PacketType::LiteralValue(6),
-                        },
-                        Packet {
-                            version: 5,
-                            type_id: 4,
-                            packet_type: PacketType::LiteralValue(12),
-                        },
-                        Packet {
-                            version: 2,
-                            type_id: 4,
-                            packet_type: PacketType::LiteralValue(15),
-                        },
-                        Packet {
-                            version: 2,
-                            type_id: 4,
-                            packet_type: PacketType::LiteralValue(15),
-                        },
-                    ]),
-                }]),
-            }]),
-        };
+        const operator_with_operator_with_operator_with_5_values_hex: &str =
+            "A0016C880162017C3686B18A3D4780";
         assert_eq!(
-            Packet::from_hex_str(packet_operator_3_nested_hex),
-            packet_operator_3_nested_struct
+            Packet::from_hex_str(operator_with_operator_with_operator_with_5_values_hex),
+            operator_with_operator_with_operator_with_5_values_struct()
         );
     }
 
     #[test]
     fn test_operator_with_operator_with_operator_with_5_values_version_sum() {
-        const packet_operator_3_nested_hex: &str = "A0016C880162017C3686B18A3D4780";
-        let packet_operator_3_nested_struct: Packet = Packet {
-            version: 5,
-            type_id: 0,
-            packet_type: PacketType::OperatorPacket(vec![Packet {
-                version: 1,
-                type_id: 0,
-                packet_type: PacketType::OperatorPacket(vec![Packet {
-                    version: 3,
-                    type_id: 0,
-                    packet_type: PacketType::OperatorPacket(vec![
-                        Packet {
-                            version: 7,
-                            type_id: 4,
-                            packet_type: PacketType::LiteralValue(6),
-                        },
-                        Packet {
-                            version: 6,
-                            type_id: 4,
-                            packet_type: PacketType::LiteralValue(6),
-                        },
-                        Packet {
-                            version: 5,
-                            type_id: 4,
-                            packet_type: PacketType::LiteralValue(12),
-                        },
-                        Packet {
-                            version: 2,
-                            type_id: 4,
-                            packet_type: PacketType::LiteralValue(15),
-                        },
-                        Packet {
-                            version: 2,
-                            type_id: 4,
-                            packet_type: PacketType::LiteralValue(15),
-                        },
-                    ]),
-                }]),
-            }]),
-        };
-        assert_eq!(packet_operator_3_nested_struct.version_sum(), 31);
+        const operator_with_operator_with_operator_with_5_values_hex: &str =
+            "A0016C880162017C3686B18A3D4780";
+        assert_eq!(
+            operator_with_operator_with_operator_with_5_values_struct().version_sum(),
+            31
+        );
     }
 }
