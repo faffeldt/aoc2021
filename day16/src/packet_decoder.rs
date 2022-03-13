@@ -1,5 +1,5 @@
 use bitvec::prelude::*;
-use std::cmp::PartialEq;
+use std::cmp::{max, PartialEq};
 use std::fmt;
 use std::iter::zip;
 
@@ -55,24 +55,27 @@ impl Packet {
             .load_be::<u8>()
             .clone();
         let data_start_idx = type_id_end_idx;
+        let buffer_end_idx = max(
+            &buffer.last_one().unwrap() + 1,
+            &buffer.last_zero().unwrap() + 1,
+        );
         println! {
             "DEBUG: Parsing packet at index {:?} (ver={:?}, type={:?}, data_start_idx={:?}) rest={:?}",
             start_index, version, type_id, data_start_idx,
-            &buffer[*index..&buffer.last_one().unwrap()+1]
+            &buffer[start_index..buffer_end_idx]
         };
 
         // All packets with type other than 4 are operator packets
         const TYPE_LITERAL_VALUE: u8 = 4;
         match *type_id {
             TYPE_LITERAL_VALUE => {
-                println! {"DEBUG: Collecting data of literal value packet starting at {:?}", data_start_idx};
+                // println! {"DEBUG: Literal value data_start_idx={:?}", data_start_idx};
                 let mut val: u64 = 0;
                 let mut chunk_idx = data_start_idx;
                 // Optionally iterate in chunks until the end of all data because
                 // size of literal value is not known beforehand
-                for c in
-                    buffer[data_start_idx..buffer.last_one().unwrap() + 1].chunks_exact(CHUNK_SIZE)
-                {
+                for c in buffer[data_start_idx..buffer_end_idx].chunks_exact(CHUNK_SIZE) {
+                    // println! {">>> DEBUG literal value chunk: {:?}", c};
                     // Bit shifts val left by 4 bits and adds new chunk
                     //      0111 (0x7) * 16   -> 0111 0000 (0x70)
                     // 0111 0000 (0x70) + 0x6 -> 0111 0110 (0x67)
@@ -80,7 +83,9 @@ impl Packet {
                     // Update index to be at end of current chunk
                     chunk_idx += CHUNK_SIZE;
                     // Check first bit if last chunk
-                    if c[0] == false {
+                    let is_last_chunk = !c[0];
+                    // println! {">>> DEBUG literal value chunk: last={:?} value={:?}", is_last_chunk, val};
+                    if is_last_chunk {
                         break;
                     }
                 }
@@ -151,8 +156,11 @@ impl Packet {
                     // Try to create subpackets while in range of subpacket bits
                     let mut subpackets = Vec::new();
                     let mut subpacket_current_idx = subpacket_start_idx;
-                    while subpacket_current_idx <= subpackets_end_idx {
+                    println! {">>> DEBUG: Buffer before while: {:?}", buffer}
+                    while subpacket_current_idx < subpackets_end_idx {
+                        println! {"> DEBUG: subpacket_current_idx={:?} subpackets_end_idx={:?}", subpacket_current_idx, subpackets_end_idx}
                         let subpacket = Packet::new(buffer, &mut subpacket_current_idx);
+                        println! {"> DEBUG: new subpacket: {}", subpacket}
                         subpackets.push(subpacket);
                     }
 
@@ -212,6 +220,27 @@ impl PartialEq for Packet {
             }
         }
         equal
+    }
+}
+
+impl std::fmt::Display for Packet {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match &self.packet_type {
+            PacketType::LiteralValue(val) => {
+                write!(
+                    f,
+                    "LiteralValue(version: {}, type_id: {}, value: {})",
+                    self.version, self.type_id, val
+                )
+            }
+            PacketType::OperatorPacket(subpacket) => {
+                write!(
+                    f,
+                    "OperatorPacket(version: {}, type_id: {}, value: {:?})",
+                    self.version, self.type_id, subpacket
+                )
+            }
+        }
     }
 }
 
@@ -609,32 +638,32 @@ mod tests {
         );
     }
 
-    // #[test]
-    // fn test_create_operator_packet_with_multiple_literal_value_packets() {
-    //     let packet_operator_1_struct: Packet = Packet {
-    //         version: 7, // 111
-    //         type_id: 3, // 011
-    //         packet_type: PacketType::OperatorPacket(vec![
-    //             Packet {
-    //                 version: 2, // 010
-    //                 type_id: 4, // 100
-    //                 packet_type: PacketType::LiteralValue(1),
-    //             },
-    //             Packet {
-    //                 version: 4, // 100
-    //                 type_id: 4, // 100
-    //                 packet_type: PacketType::LiteralValue(2),
-    //             },
-    //             Packet {
-    //                 version: 1, // 001
-    //                 type_id: 4, // 100
-    //                 packet_type: PacketType::LiteralValue(3),
-    //             },
-    //         ]),
-    //     };
-    //     assert_eq!(
-    //         Packet::from_hex_str(packet_operator_1_hex),
-    //         packet_operator_1_struct
-    //     );
-    // }
+    #[test]
+    fn test_create_operator_packet_with_multiple_literal_value_packets() {
+        let packet_operator_1_struct: Packet = Packet {
+            version: 7, // 111
+            type_id: 3, // 011
+            packet_type: PacketType::OperatorPacket(vec![
+                Packet {
+                    version: 2, // 010
+                    type_id: 4, // 100
+                    packet_type: PacketType::LiteralValue(1),
+                },
+                Packet {
+                    version: 4, // 100
+                    type_id: 4, // 100
+                    packet_type: PacketType::LiteralValue(2),
+                },
+                Packet {
+                    version: 1, // 001
+                    type_id: 4, // 100
+                    packet_type: PacketType::LiteralValue(3),
+                },
+            ]),
+        };
+        assert_eq!(
+            Packet::from_hex_str(packet_operator_1_hex),
+            packet_operator_1_struct
+        );
+    }
 }
