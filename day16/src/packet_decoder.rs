@@ -173,14 +173,11 @@ impl Packet {
                     }
                 }
             }
-            _ => {
-                panic! {"Unknown type in buffer: {:?}", *type_id}
-            }
         }
     }
 
-    pub fn version_sum(self) -> usize {
-        match self.packet_type {
+    pub fn version_sum(&self) -> usize {
+        match &self.packet_type {
             PacketType::LiteralValue(_) => self.version.into(),
             PacketType::OperatorPacket(subpackets) => {
                 let mut version_sum: usize = self.version.into();
